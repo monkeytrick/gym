@@ -17,18 +17,11 @@ class AdminBookingController extends Controller
                             ->get(['bookings.booking_id', 'users.name','classes.class_id',
                                    'classes.class_name', 'classes.class_date', 'users.phone','users.email']);  
     
-                           $today      = $bookings->where('class_date', '=', \Carbon\Carbon::today());
+                            $today     = $bookings->where('class_date', '=', \Carbon\Carbon::today());
+                            $past      = $bookings->where('class_date', '<', \Carbon\Carbon::today());
+                            $thisWeek  = $bookings->where('class_date', '>', \Carbon\Carbon::today());
 
-                            $past  = $bookings->where('class_date', '<', \Carbon\Carbon::today());
-
-
-                            $thisWeek   = $bookings->where('class_date', '>', \Carbon\Carbon::today());
-
-                            return(['today' => $today, 'past' => $past, 'thisWeek' => $thisWeek]);
-
-     
+                    return(['today' => $today->values(), 'past' => $past->values(), 'thisWeek' => $thisWeek->values()]);
+    
     }
-
-
-
-}
+};

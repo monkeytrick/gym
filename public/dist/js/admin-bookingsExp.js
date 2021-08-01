@@ -82,14 +82,18 @@ document.getElementById('view-bookings').addEventListener('click', (event)=> {
 
             xhttp.onreadystatechange = function() {
                 if(this.readyState == 4 && this.status == 200) {
+console.log("allBookings before parse " + this.responseText + " Type of = " + typeof(this.responseText))
+
                     allBookings = JSON.parse(this.responseText)
-                    resolve(allBookings)                     
+
+                    console.log("allBookings after parse " + allBookings.past[0])
+                    resolve(allBookings)                                       
                 }
             }
         
             xhttp.open("GET", "/admin/bookings", true);
         
-            xhttp.setRequestHeader('Content-Type', 'application/json');
+            // xhttp.setRequestHeader('Content-Type', 'application/json');
         
             let xToken =  document.querySelector('meta[name="csrf-token"]').content;
             xhttp.setRequestHeader("X-CSRF-Token", xToken)   
@@ -97,7 +101,10 @@ document.getElementById('view-bookings').addEventListener('click', (event)=> {
             xhttp.send();
     
         })
-        .then(function(bookingsPast){
+        .then(function(allBookings){
+
+            console.log("first promise is " + allBookings)
+
 
             let tables = ["Today", 'Upcoming Bookings', 'PreviousBookings']
 
@@ -131,14 +138,17 @@ document.getElementById('view-bookings').addEventListener('click', (event)=> {
             });
 
             // Use constucted strings for tables HTML
-            divCreate.innerHTML = newTables;
+            divCreate.innerHTML = newTables
 
             // Append tables to element
-            contentField.appendChild(divCreate)   
-            // console.log('tables created')
-            // resolve(bookingsPast)
+            contentField.appendChild(divCreate)  
+            console.log("TABLES CREATED")
+            return allBookings
 
-            }).then(function(){
+            }).then(function(allBookings){
+                
+                console.log("LAST FUNC CALLEd")
+                // console.log("Second promise is " + allBookings)
             // Populate tables with data
             $('#PreviousBookings').DataTable({
 
